@@ -1,0 +1,19 @@
+# Template file for 'ttf-jetbrainsmono-nerd'
+pkgname=ttf-jetbrainsmono-nerd
+version=3.4.0
+revision=1
+hostmakedepends="tar xz"
+depends="font-util"
+short_desc="A typeface for developers."
+maintainer="aniruddhgutta <aniruddhgutta@disroot.org>"
+license="OFL-1.1"
+homepage="https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/JetBrainsMono"
+distfiles="https://github.com/ryanoasis/nerd-fonts/releases/download/v${version}/JetBrainsMono.tar.xz"
+checksum=ef552a3e638f25125c6ad4c51176a6adcdce295ab1d2ffacf0db060caf8c1582
+font_dirs="/usr/share/fonts/TTF"
+
+do_install() {
+	vmkdir usr/share/fonts/TTF
+	install -m644 JetBrainsMonoNerdFont*.ttf ${DESTDIR}/usr/share/fonts/TTF
+	vlicense OFL.txt
+}

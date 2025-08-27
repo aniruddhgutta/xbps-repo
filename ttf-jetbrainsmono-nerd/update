@@ -1,0 +1,1 @@
+pattern='mononoki-nerd-\K([\d.]+\d+)'
