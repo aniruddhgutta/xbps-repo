@@ -1,0 +1,19 @@
+# Template file for 'ttf-mononoki-nerd'
+pkgname=ttf-mononoki-nerd
+version=3.4.0
+revision=1
+hostmakedepends="tar xz"
+depends="font-util"
+short_desc="A font for programming and code review."
+maintainer="aniruddhgutta <aniruddhgutta@disroot.org>"
+license="OFL-1.1"
+homepage="https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Mononoki"
+distfiles="https://github.com/ryanoasis/nerd-fonts/releases/download/v${version}/Mononoki.tar.xz"
+checksum=5c9b3035d45aabfe1fb3ce5e3028130043398cecc1409b20fe8273692192726e
+font_dirs="/usr/share/fonts/TTF"
+
+do_install() {
+	vmkdir usr/share/fonts/TTF
+	install -m644 MononokiNerdFont*.ttf ${DESTDIR}/usr/share/fonts/TTF
+	vlicense LICENSE.txt
+}
