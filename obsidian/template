@@ -1,0 +1,33 @@
+# Template file for 'obsidian'
+pkgname=obsidian
+version=1.9.12
+revision=1
+only_for_archs="x86_64"
+short_desc="Knowledge base that works on local Markdown files"
+maintainer="aniruddhgutta <aniruddhgutta@disroot.org>"
+hostmakedepends="tar xz"
+license="custom:Obsidian-EULA"
+homepage="https://obsidian.md/"
+distfiles="https://github.com/obsidianmd/obsidian-releases/releases/download/v${version}/obsidian_${version}_amd64.deb"
+checksum=5c2a5d7fcd566879e3db066ccc4df81b9c6ac3e72ec88a4ae13e0428a1cf289f
+nostrip=yes
+
+do_extract() {
+  mkdir -p ${DESTDIR}
+  ar x ${XBPS_SRCDISTDIR}/${pkgname}-${version}/obsidian_${version}_amd64.deb
+}
+
+do_install() {
+  tar xf data.tar.xz -C ${DESTDIR}
+
+  mkdir -p ${DESTDIR}/usr/bin
+  ln -s /opt/Obsidian/obsidian ${DESTDIR}/usr/bin/obsidian
+
+  for size in 16 32 48 64 128 256 512; do
+    mkdir -p ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps
+    cp ${DESTDIR}/opt/Obsidian/resources/icon.png \
+       ${DESTDIR}/usr/share/icons/hicolor/${size}x${size}/apps/obsidian.png
+  done
+
+  rm -rf ${DESTDIR}/etc
+}
