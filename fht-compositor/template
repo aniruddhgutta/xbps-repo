@@ -1,0 +1,25 @@
+# Template file for 'fht-compositor'
+pkgname=fht-compositor
+version=25.03.1
+revision=1
+build_style=cargo
+make_install_args="--profile opt --path ."
+hostmakedepends="pkg-config clang19-devel"
+makedepends="eudev-libudev-devel libxkbcommon-devel libinput-devel libgbm-devel
+ libdisplay-info-devel pipewire-devel pango-devel libseat-devel clang19-devel"
+depends="wayland"
+checkdepends="wayland"
+short_desc="A dynamic tiling Wayland compositor"
+maintainer="aniruddhgutta <aniruddhgutta@disroot.org>"
+license="GPL-3.0-or-later"
+homepage="https://nferhat.github.io/fht-compositor"
+changelog="https://github.com/nferhat/fht-compositor/releases"
+distfiles="https://github.com/nferhat/fht-compositor/archive/refs/tags/${version}.tar.gz"
+checksum=55789a5c4e8c12b23a5d72d4bf8b8b75fc116e0219c55784f11bd315995d2c3d
+
+post_install() {
+  vlicense LICENSE
+	vinstall res/fht-compositor.desktop 644	usr/share/wayland-sessions
+	vinstall res/fht-compositor.portal 644 usr/share/xdg-desktop-portal/portals/
+	vinstall res/fht-compositor-portals.conf 644 usr/share/xdg-desktop-portal/
+}
