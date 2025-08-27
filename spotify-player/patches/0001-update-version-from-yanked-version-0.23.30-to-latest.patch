@@ -1,0 +1,115 @@
+From a445674b6f6664626e1a2e0d30675f3c9831fa60 Mon Sep 17 00:00:00 2001
+From: KUHLwasStolen <149091393+KUHLwasStolen@users.noreply.github.com>
+Date: Wed, 30 Jul 2025 19:57:35 +0200
+Subject: [PATCH 1/6] update version from yanked version 0.23.30 to latest
+ version 0.23.31 (#788)
+
+---
+ Cargo.lock                | 20 ++++++++++----------
+ spotify_player/Cargo.toml |  2 +-
+ 2 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/Cargo.lock b/Cargo.lock
+index 75156e9..8c2aec1 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -2253,7 +2253,7 @@ dependencies = [
+  "hyper 1.6.0",
+  "hyper-util",
+  "log",
+- "rustls 0.23.30",
++ "rustls 0.23.31",
+  "rustls-native-certs 0.8.1",
+  "rustls-pki-types",
+  "tokio",
+@@ -4265,7 +4265,7 @@ dependencies = [
+  "quinn-proto",
+  "quinn-udp",
+  "rustc-hash 2.1.1",
+- "rustls 0.23.30",
++ "rustls 0.23.31",
+  "socket2 0.5.10",
+  "thiserror 2.0.12",
+  "tokio",
+@@ -4285,7 +4285,7 @@ dependencies = [
+  "rand 0.9.2",
+  "ring",
+  "rustc-hash 2.1.1",
+- "rustls 0.23.30",
++ "rustls 0.23.31",
+  "rustls-pki-types",
+  "slab",
+  "thiserror 2.0.12",
+@@ -4628,7 +4628,7 @@ dependencies = [
+  "percent-encoding",
+  "pin-project-lite",
+  "quinn",
+- "rustls 0.23.30",
++ "rustls 0.23.31",
+  "rustls-pki-types",
+  "serde",
+  "serde_json",
+@@ -4830,9 +4830,9 @@ dependencies = [
+ 
+ [[package]]
+ name = "rustls"
+-version = "0.23.30"
++version = "0.23.31"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "069a8df149a16b1a12dcc31497c3396a173844be3cac4bd40c9e7671fef96671"
++checksum = "c0ebcbd2f03de0fc1122ad9bb24b127a5a6cd51d72604a3f3c50ac459762b6cc"
+ dependencies = [
+  "aws-lc-rs",
+  "log",
+@@ -5402,7 +5402,7 @@ dependencies = [
+  "regex",
+  "reqwest 0.12.22",
+  "rspotify",
+- "rustls 0.23.30",
++ "rustls 0.23.31",
+  "serde",
+  "serde_json",
+  "souvlaki",
+@@ -5995,7 +5995,7 @@ version = "0.26.2"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "8e727b36a1a0e8b74c376ac2211e40c2c8af09fb4013c60d910495810f008e9b"
+ dependencies = [
+- "rustls 0.23.30",
++ "rustls 0.23.31",
+  "tokio",
+ ]
+ 
+@@ -6018,7 +6018,7 @@ checksum = "edc5f74e248dc973e0dbb7b74c7e0d6fcc301c694ff50049504004ef4d0cdcd9"
+ dependencies = [
+  "futures-util",
+  "log",
+- "rustls 0.23.30",
++ "rustls 0.23.31",
+  "rustls-native-certs 0.8.1",
+  "rustls-pki-types",
+  "tokio",
+@@ -6252,7 +6252,7 @@ dependencies = [
+  "httparse",
+  "log",
+  "rand 0.8.5",
+- "rustls 0.23.30",
++ "rustls 0.23.31",
+  "rustls-pki-types",
+  "sha1",
+  "thiserror 1.0.69",
+diff --git a/spotify_player/Cargo.toml b/spotify_player/Cargo.toml
+index 8d0cba1..4797250 100644
+--- a/spotify_player/Cargo.toml
++++ b/spotify_player/Cargo.toml
+@@ -55,7 +55,7 @@ clap_complete = "4.5.55"
+ which = "8.0.0"
+ fuzzy-matcher = { version = "0.3.7", optional = true }
+ html-escape = "0.2.13"
+-rustls = { version = "0.23.30", default-features = false, features = ["ring"] }
++rustls = { version = "0.23.31", default-features = false, features = ["ring"] }
+ unicode-bidi = "0.3.18"
+ 
+ [target.'cfg(any(target_os = "windows", target_os = "macos"))'.dependencies.winit]
+-- 
+2.50.1
+

@@ -1,0 +1,145 @@
+From df87519408b08460e089ed471d91307ee9714e8c Mon Sep 17 00:00:00 2001
+From: KUHLwasStolen <149091393+KUHLwasStolen@users.noreply.github.com>
+Date: Tue, 5 Aug 2025 16:02:05 +0200
+Subject: [PATCH 2/6] add optional feature to pixelate album art to match
+ terminal aesthetic (#793)
+
+---
+ README.md                        | 16 ++++++++++++++++
+ docs/config.md                   |  1 +
+ examples/app.toml                |  1 +
+ spotify_player/Cargo.toml        |  1 +
+ spotify_player/src/client/mod.rs | 22 ++++++++++++++++++++++
+ spotify_player/src/config/mod.rs |  4 ++++
+ 6 files changed, 45 insertions(+)
+
+diff --git a/README.md b/README.md
+index 20eb673..62a62dd 100644
+--- a/README.md
++++ b/README.md
+@@ -247,6 +247,22 @@ Examples of image rendering:
+ 
+ ![others](https://user-images.githubusercontent.com/40011582/172967325-d2098037-e19e-440a-a38a-5b076253ecb1.png)
+ 
++#### Pixelate
++
++If your terminal supports high-res images, but you like the pixelated look you can enable the `pixelate` feature, which also enables the `image` feature:
++
++```shell
++cargo install spotify_player --features pixelate
++```
++
++The amount of pixels can be tweaked via the `cover_img_pixels` config option.
++
++| `cover_img_pixels` | `8` | `16` | `32` | `64` |
++|--------------------|-----|------|------|------|
++|       example      | <img width="100" alt="8x8" src="https://github.com/user-attachments/assets/4137aaea-ce28-4019-8cd5-2d14327e72e4" /> | <img width="100" alt="16x16" src="https://github.com/user-attachments/assets/0ca94748-093a-468c-8fb3-1f5639666eb6" /> | <img width="100" alt="32x32" src="https://github.com/user-attachments/assets/f5d0f2da-0439-47e4-91c9-3a2aa73ac90c" /> | <img width="100" alt="64x64" src="https://github.com/user-attachments/assets/d06ef731-38fa-424d-9672-313f56c193d0" /> |
++
++To temporarily disable the `pixelate` feature just set `cover_img_pixels` to a high value like `512`.
++
+ ### Notify
+ 
+ To enable desktop notification support, `spotify_player` needs to be built/installed with `notify` feature (**disabled** by default). To install the application with `notify` feature included, run:
+diff --git a/docs/config.md b/docs/config.md
+index 4934260..4ea45d9 100644
+--- a/docs/config.md
++++ b/docs/config.md
+@@ -55,6 +55,7 @@ All configuration files should be placed inside the application's configuration
+ | `cover_img_width`                 | the width of the cover image (`image` feature only)                                                                                                    | `5`                                                         |
+ | `cover_img_length`                | the length of the cover image (`image` feature only)                                                                                                   | `9`                                                         |
+ | `cover_img_scale`                 | the scale of the cover image (`image` feature only)                                                                                                    | `1.0`                                                       |
++| `cover_img_pixels`                | the amount of pixels per side of the cover image (`image` and `pixelate` feature only)                                                                 | `16`                                                        |
+ | `seek_duration_secs`              | the duration (in seconds) to seek when using `SeekForward` and `SeekBackward` commands                                                                 | `5`                                                         |
+ | `sort_artist_albums_by_type`      | sort albums on artist's pages by type, i.e. album or single                                                                                            | `false`                                                     |
+ 
+diff --git a/examples/app.toml b/examples/app.toml
+index 38e561f..c4611a4 100644
+--- a/examples/app.toml
++++ b/examples/app.toml
+@@ -21,6 +21,7 @@ pause_icon = "▌▌"
+ liked_icon = "♥"
+ cover_img_length = 9
+ cover_img_width = 5
++cover_img_pixels = 16
+ seek_duration_secs = 5
+ 
+ [device]
+diff --git a/spotify_player/Cargo.toml b/spotify_player/Cargo.toml
+index 4797250..a5c812d 100644
+--- a/spotify_player/Cargo.toml
++++ b/spotify_player/Cargo.toml
+@@ -88,6 +88,7 @@ streaming = ["librespot-playback", "librespot-connect"]
+ media-control = ["souvlaki", "winit", "windows"]
+ image = ["viuer", "dep:image"]
+ sixel = ["image", "viuer/sixel"]
++pixelate = ["image"]
+ notify = ["notify-rust"]
+ daemon = ["daemonize", "streaming"]
+ fzf = ["fuzzy-matcher"]
+diff --git a/spotify_player/src/client/mod.rs b/spotify_player/src/client/mod.rs
+index ac0a752..de71a66 100644
+--- a/spotify_player/src/client/mod.rs
++++ b/spotify_player/src/client/mod.rs
+@@ -1663,8 +1663,19 @@ impl Client {
+         #[cfg(feature = "image")]
+         if !state.data.read().caches.images.contains_key(url) {
+             let bytes = self.retrieve_image(url, &path, false).await?;
++
++            #[cfg(not(feature = "pixelate"))]
+             let image =
+                 image::load_from_memory(&bytes).context("Failed to load image from memory")?;
++            #[cfg(feature = "pixelate")]
++            let mut image =
++                image::load_from_memory(&bytes).context("Failed to load image from memory")?;
++
++            #[cfg(feature = "pixelate")]
++            {
++                Self::pixelate_image(&mut image);
++            }
++
+             state
+                 .data
+                 .write()
+@@ -1833,6 +1844,17 @@ impl Client {
+         Ok(bytes.to_vec())
+     }
+ 
++    #[cfg(feature = "pixelate")]
++    fn pixelate_image(image: &mut image::DynamicImage) {
++        let pixels = config::get_config().app_config.cover_img_pixels;
++        let pixelated_image = image.resize(pixels, pixels, image::imageops::FilterType::Nearest);
++        *image = pixelated_image.resize(
++            image.width(),
++            image.height(),
++            image::imageops::FilterType::Nearest,
++        );
++    }
++
+     /// Process a list of albums, which includes
+     /// - sort albums by the release date
+     /// - sort albums by the type if `sort_artist_albums_by_type` config is enabled
+diff --git a/spotify_player/src/config/mod.rs b/spotify_player/src/config/mod.rs
+index d0ea458..58ec49a 100644
+--- a/spotify_player/src/config/mod.rs
++++ b/spotify_player/src/config/mod.rs
+@@ -95,6 +95,8 @@ pub struct AppConfig {
+     pub cover_img_width: usize,
+     #[cfg(feature = "image")]
+     pub cover_img_scale: f32,
++    #[cfg(feature = "pixelate")]
++    pub cover_img_pixels: u32,
+ 
+     #[cfg(feature = "media-control")]
+     pub enable_media_control: bool,
+@@ -307,6 +309,8 @@ impl Default for AppConfig {
+             cover_img_width: 5,
+             #[cfg(feature = "image")]
+             cover_img_scale: 1.0,
++            #[cfg(feature = "pixelate")]
++            cover_img_pixels: 16,
+ 
+             // Because of the "creating new window and stealing focus" behaviour
+             // when running the media control event loop on startup,
+-- 
+2.50.1
+

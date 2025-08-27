@@ -1,0 +1,26 @@
+From b92c7379b192e6492ec37b722ecb9934e6803c2f Mon Sep 17 00:00:00 2001
+From: KUHLwasStolen <149091393+KUHLwasStolen@users.noreply.github.com>
+Date: Tue, 5 Aug 2025 16:13:16 +0200
+Subject: [PATCH 3/6] remove unnecessary auth scopes email and birthdate (#792)
+
+---
+ spotify_player/src/auth.rs | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/spotify_player/src/auth.rs b/spotify_player/src/auth.rs
+index e5b2d79..f3b7646 100644
+--- a/spotify_player/src/auth.rs
++++ b/spotify_player/src/auth.rs
+@@ -24,9 +24,7 @@ const OAUTH_SCOPES: &[&str] = &[
+     "user-modify-playback-state",
+     "user-modify-private",
+     "user-personalized",
+-    "user-read-birthdate",
+     "user-read-currently-playing",
+-    "user-read-email",
+     "user-read-play-history",
+     "user-read-playback-position",
+     "user-read-playback-state",
+-- 
+2.50.1
+

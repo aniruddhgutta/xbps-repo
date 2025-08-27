@@ -1,0 +1,24 @@
+# Template file for 'spotify-player'
+pkgname=spotify-player
+version=0.20.7
+revision=1
+build_style=cargo
+make_install_args="--path spotify_player --no-default-features --features rodio-backend,streaming,media-control,daemon,notify,sixel"
+hostmakedepends="pkg-config cmake clang rust-bindgen"
+makedepends="libsixel-devel openssl-devel alsa-lib-devel dbus-devel libxcb-devel"
+patch_args="-Np1"
+short_desc="Command driven spotify player"
+maintainer="aniruddhgutta <aniruddhgutta@disroot.org>"
+license="MIT"
+homepage="https://github.com/aome510/spotify-player"
+distfiles="https://github.com/aome510/spotify-player/archive/refs/tags/v${version}.tar.gz"
+checksum=8b4c7ec7855fb2af8862a1ca8818307f2befcb00c02e9e5da570b1a5b3b908c1
+
+pre_build() {
+    rm -f spotify_player/Cargo.lock
+    cargo fetch --locked --manifest-path spotify_player/Cargo.toml
+}
+
+post_install() {
+  vlicense LICENSE
+}
