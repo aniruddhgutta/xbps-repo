@@ -1,0 +1,27 @@
+# Template file for 'spotify-launcher'
+pkgname=spotify-launcher
+version=0.6.3
+revision=1
+build_style=cargo
+hostmakedepends="pkg-config"
+makedepends="alsa-lib-devel gtk+3-devel libXScrnSaver-devel openssl-devel
+ nss-devel at-spi2-atk-devel libcurl-devel libSM-devel"
+depends="desktop-file-utils sequoia-sqv zenity"
+short_desc="Client for spotify's apt repository in Rust for Arch Linux"
+maintainer="aniruddhgutta <aniruddhgutta@disroot.org>"
+license="MIT, Apache-2.0"
+homepage="https://github.com/kpcyrd/spotify-launcher"
+distfiles="https://github.com/kpcyrd/spotify-launcher/archive/refs/tags/v${version}.tar.gz"
+checksum=2f94319ecd59d6129b2124262a1155a56a40601c452b5099a5b59bf17c7b1c27
+
+post_install() {
+		vinstall data/pubkey_C85668DF69375001.gpg 644 usr/share/spotify-launcher keyring.pgp
+    vinstall contrib/spotify-launcher.desktop 644 usr/share/applications
+    vinstall contrib/icons/spotify-linux-512.png 644 usr/share/pixmaps spotify-launcher.png
+    vinstall contrib/spotify-launcher.conf 644 etc
+
+    for size in 22 24 32 48 64 128 256 512; do
+        vinstall "contrib/icons/spotify-linux-${size}.png" 644 \
+            "usr/share/icons/hicolor/${size}x${size}/apps" spotify-launcher.png
+    done
+}
